@@ -91,7 +91,7 @@ def get_db_cfg():
         'password:': os.getenv('MYSQL_PASSWORD', ''),
         'database': os.getenv('MYSQL_DATABASE', ''),
         'host': os.getenv('MYSQL_HOST', ''),
-        'backup_path': os.getenv('BACKUP_PATH', ''),
+        'backup_path': os.getenv('BACKUP_PATH', '/backup'),
     }
     return db_cfg
 
