@@ -105,6 +105,11 @@ def backup():
 
 def backup_single_file_dump(db_cfg):
     today = datetime.datetime.now().strftime('%Y-%m-%d')
+    
+    # Cleanup previous jobs
+    shutil.rmtree('{}/k8s-db-backup/{}'.format(db_cfg['backup_path'], today))
+    
+    # Create base dir
     os.makedirs('{}/k8s-db-backup/{}'.format(db_cfg['backup_path'], today))
 
     backup_filename = '{}/k8s-db-backup/full-db-dump-{}.sql'.format(db_cfg['backup_path'], today)
@@ -135,6 +140,11 @@ def backup_single_file_dump(db_cfg):
 
 def backup_split_by_table(db_cfg):
     today = datetime.datetime.now().strftime('%Y-%m-%d')
+    
+    # Cleanup previous jobs
+    shutil.rmtree('{}/k8s-db-backup/{}'.format(db_cfg['backup_path'], today))
+    
+    # Create base dir
     os.makedirs('{}/k8s-db-backup/{}'.format(db_cfg['backup_path'], today))
 
     tables = run(
