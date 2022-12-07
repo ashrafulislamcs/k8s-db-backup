@@ -88,7 +88,7 @@ def compress_and_upload(backup_filename, backup_filename_gz, backup_filename_gz_
 def get_db_cfg():
     db_cfg = {
         'user': os.getenv('MYSQL_USER', ''),
-        'password:': os.getenv('MYSQL_PASSWORD', ''),
+        'password': os.getenv('MYSQL_PASSWORD', ''),
         'database': os.getenv('MYSQL_DATABASE', ''),
         'host': os.getenv('MYSQL_HOST', ''),
         'backup_path': os.getenv('BACKUP_PATH', '/backup'),
@@ -111,7 +111,7 @@ def backup_single_file_dump(db_cfg):
     try:
         shutil.rmtree(basedir)
     except Exception as e:
-        print('WARN: {} not found. Create a new empty dir')
+        print('WARN: {} not found. Create a new empty dir'.format(basedir))
     
     # Create base dir
     os.makedirs(basedir)
@@ -150,7 +150,7 @@ def backup_split_by_table(db_cfg):
     try:
         shutil.rmtree(basedir)
     except Exception as e:
-        print('WARN: {} not found. Create a new empty dir')
+        print('WARN: {} not found. Create a new empty dir'.format(basedir))
     
     # Create base dir
     os.makedirs(basedir)
