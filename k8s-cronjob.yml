@@ -17,6 +17,7 @@ spec:
           containers:
             - name: k8s-db-backup
               image: ghcr.io/garutilorenzo/k8s-db-backup:latest
+              imagePullPolicy: Always
               command: [ "k8s-db-backup" ]
               env:
                 - name: MYSQL_USER
