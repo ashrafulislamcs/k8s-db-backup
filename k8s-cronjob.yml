@@ -1,0 +1,47 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: default
+  name: k8s-db-backup
+spec:
+  schedule: "0 22 * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          name: k8s-db-backup
+          labels:
+            name: k8s-db-backup
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: k8s-db-backup
+              image: ghcr.io/garutilorenzo/k8s-db-backup:latest
+              command: [ "k8s-db-backup" ]
+              env:
+                - name: MYSQL_USER
+                  value: <MYSQL_USERNAME>
+                - name: MYSQL_PASSWORD
+                  value: <MYSQL_PASSWORD>
+                - name: MYSQL_DATABASE
+                  value: <MYSQL_DATABASE>
+                - name: MYSQL_HOST
+                  value: <MYSQL_HOST>
+                - name: BACKUP_PATH
+                  value: /backup
+                - name: S3_PROVIDER
+                  value: <aws|oci>
+                - name: AWS_SECRET_KEY
+                  value: <AWS_SECRET_KEY>
+                - name: AWS_ACCESS_KEY
+                  value: <AWS_ACCESS_KEY>
+                - name: AWS_REGION
+                  value: <AWS_REGION>
+                - name: AWS_BUCKET_NAME
+                  value: <AWS_BUCKET_NAME>
+              volumeMounts:
+                - name: k8s-db-backup-temp-dir
+                  mountPath: /backup
+          volumes:
+            - name: k8s-db-backup-temp-dir
+              emptyDir: {}

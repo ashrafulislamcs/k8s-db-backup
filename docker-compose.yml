@@ -1,0 +1,30 @@
+version: '3.4'
+services:
+  k8s_db_backup:
+    image: ghcr.io/garutilorenzo/k8s-db-backup:latest
+    container_name: k8s_db_backup
+    volumes:
+      - type: volume
+        source: backup
+        target: /backup
+    command: ['k8s-db-backup']
+    environment:
+      - MYSQL_USER=<MYSQL_USERNAME>
+      - MYSQL_PASSWORD=<MYSQL_PASSWORD>
+      - MYSQL_DATABASE=<MYSQL_DATABASE>
+      - MYSQL_HOST=<MYSQL_HOST>
+      - BACKUP_PATH=/backup
+      - S3_PROVIDER=<aws|oci>
+      - AWS_SECRET_KEY=<SECRET_KEY>
+      - AWS_ACCESS_KEY=<ACCESS_KEY>
+      - AWS_REGION=<REGION>
+      - AWS_BUCKET_NAME=<BUCKET_NAME>
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "5"
+    restart: "no"
+
+volumes:
+  backup:
