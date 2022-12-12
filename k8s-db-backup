@@ -6,6 +6,7 @@ import os, datetime, shutil, gzip
 from subprocess import Popen, run, PIPE
 
 S3_PROVIDER=os.getenv('S3_PROVIDER', '')
+BACKUP_PATH_PREFIX=os.getenv('BACKUP_PATH_PREFIX', 'k8s-db-backup')
 
 def get_provider_cfg(provider):
     if provider.lower() not in ['oci', 'aws']:
@@ -105,7 +106,8 @@ def backup():
 
 def backup_single_file_dump(db_cfg):
     today = datetime.datetime.now().strftime('%Y-%m-%d')
-    basedir = '{}/k8s-db-backup'.format(db_cfg['backup_path'])
+    basedir = '{}/{}'.format(db_cfg['backup_path'], BACKUP_PATH_PREFIX)
+    database = db_cfg['database']
     
     # Cleanup previous jobs
     try:
@@ -116,9 +118,9 @@ def backup_single_file_dump(db_cfg):
     # Create base dir
     os.makedirs(basedir)
 
-    backup_filename = '{}/k8s-db-backup/full-db-dump-{}.sql'.format(db_cfg['backup_path'], today)
-    backup_filename_gz = '{}/k8s-db-backup/full-db-dump-{}.sql.gz'.format(db_cfg['backup_path'], today)
-    backup_filename_gz_remote = 'k8s-db-backup/full-db-dump-{}.sql.gz'.format(today)
+    backup_filename = '{}/{}-db-dump-{}.sql'.format(basedir, database, today)
+    backup_filename_gz = '{}/{}-db-dump-{}.sql.gz'.format(basedir, database, today)
+    backup_filename_gz_remote = '{}/{}-db-dump-{}.sql.gz'.format(BACKUP_PATH_PREFIX, database, today)
     
     filename_obj = open(backup_filename, "w")
 
@@ -140,11 +142,12 @@ def backup_single_file_dump(db_cfg):
             backup_filename_gz=backup_filename_gz,
             backup_filename_gz_remote=backup_filename_gz_remote,
         )    
-    shutil.rmtree('{}/k8s-db-backup/'.format(db_cfg['backup_path']))
+    shutil.rmtree(basedir)
 
 def backup_split_by_table(db_cfg):
     today = datetime.datetime.now().strftime('%Y-%m-%d')
-    basedir = '{}/k8s-db-backup/{}'.format(db_cfg['backup_path'], today)
+    basedir = '{}/{}/{}'.format(db_cfg['backup_path'], BACKUP_PATH_PREFIX, today)
+    database = db_cfg['database']
     
     # Cleanup previous jobs
     try:
@@ -169,9 +172,9 @@ def backup_split_by_table(db_cfg):
             if not table:
                 continue
 
-            backup_filename = '{}/k8s-db-backup/{}/{}.sql'.format(db_cfg['backup_path'], today, table)
-            backup_filename_gz = '{}/k8s-db-backup/{}/{}.sql.gz'.format(db_cfg['backup_path'], today, table)
-            backup_filename_gz_remote = 'k8s-db-backup/{}/{}.sql.gz'.format(today, table)
+            backup_filename = '{}/{}-{}.sql'.format(basedir, database, table)
+            backup_filename_gz = '{}/{}-{}.sql.gz'.format(basedir, database, table)
+            backup_filename_gz_remote = '{}/{}/{}-{}.sql.gz'.format(BACKUP_PATH_PREFIX, today, database, table)
             
             filename_obj = open(backup_filename, "w")
 
@@ -192,7 +195,7 @@ def backup_split_by_table(db_cfg):
                     backup_filename_gz=backup_filename_gz,
                     backup_filename_gz_remote=backup_filename_gz_remote,
                 )
-    shutil.rmtree('{}/k8s-db-backup/{}'.format(db_cfg['backup_path'], today))
+    shutil.rmtree(basedir)
 
 if __name__ == '__main__':
     backup()
