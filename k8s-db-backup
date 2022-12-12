@@ -101,8 +101,10 @@ def backup():
     backup_strategy = os.getenv('BACKUP_STRATEGY', 'SINGLE_FILE_DUMP')
     if backup_strategy == 'SINGLE_FILE_DUMP':
         backup_single_file_dump(db_cfg)
-    else:
+    elif backup_strategy == 'SPLIT_BY_TABLE':
         backup_split_by_table(db_cfg)
+    else:
+        raise Exception('Backup strategy: {} not supported. Supported strategies are: SINGLE_FILE_DUMP and SPLIT_BY_TABLE'.format(backup_strategy))
 
 def backup_single_file_dump(db_cfg):
     today = datetime.datetime.now().strftime('%Y-%m-%d')
