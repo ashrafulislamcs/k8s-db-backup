@@ -20,18 +20,24 @@ before it is transferred to the object storage.
 
 | Var   | Required | Desc |
 | ------- | ------- | ----------- |
-| `S3_PROVIDER`       | `yes`       | S3 compatible provider. Supported providers: aws, oci  |
-| `AWS_SECRET_KEY`       | `yes if provider == 'aws'`       | aws secret key  |
-| `AWS_ACCESS_KEY`       | `yes if provider == 'aws'`       | aws access key  |
-| `AWS_REGION`       | `yes if provider == 'aws'`       | aws region  |
-| `AWS_BUCKET_NAME`       | `yes if provider == 'aws'`       | aws bucket name  |
-| `OCI_SECRET_KEY`       | `yes if provider == 'oci'`       | oci secret key  |
-| `OCI_ACCESS_KEY`       | `yes if provider == 'oci'`       | oci access key  |
-| `OCI_REGION`       | `yes if provider == 'oci'`       | oci region  |
-| `OCI_BUCKET_NAME`       | `yes if provider == 'oci'`       | oci bucket name  |
-| `OCI_NAMESPACE`       | `yes if provider == 'oci'`       | oci namespace. Follow Understanding Object Storage Namespaces on [OCI provider setup](#oci-provider-setup)  |
+| `S3_PROVIDER`       | `always`       | S3 compatible provider. Supported providers: aws, oci  |
+| `AWS_SECRET_KEY`       | `aws`       | aws secret key  |
+| `AWS_ACCESS_KEY`       | `aws`       | aws access key  |
+| `AWS_REGION`       | `aws`       | aws region  |
+| `AWS_BUCKET_NAME`       | `aws`       | aws bucket name  |
+| `OCI_SECRET_KEY`       | `oci`       | oci secret key  |
+| `OCI_ACCESS_KEY`       | `oci`       | oci access key  |
+| `OCI_REGION`       | `oci`       | oci region  |
+| `OCI_BUCKET_NAME`       | `oci`       | oci bucket name  |
+| `OCI_NAMESPACE`       | `oci`       | oci namespace. Follow Understanding Object Storage Namespaces on [OCI provider setup](#oci-provider-setup)  |
 | `BACKUP_PATH_PREFIX`       | `no`       | Local and remote prefix where the backups will be stored. Default: k8s-db-backup  |
 | `BACKUP_STRATEGY`       | `no`       | Define the backup strategy: single dump or split backup by tables. Default: SINGLE_FILE_DUMP. Supported strategies are SINGLE_FILE_DUMP and SPLIT_BY_TABLE |
+
+**Note** on required column:
+
+* `always` variable always required
+* `aws` or `oci` specific provider variable
+* `no` optional/not required variable
 
 ### AWS provider setup
 
